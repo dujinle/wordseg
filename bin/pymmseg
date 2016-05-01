@@ -75,6 +75,7 @@ def process_tokens(stdin, separator):
     for tk in algor:
         if not first:
             ret += separator
+        print tk.text,tk.pos,tk.start,tk.end
         ret += tk.text
         first = False
     return ret

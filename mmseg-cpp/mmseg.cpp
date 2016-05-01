@@ -174,16 +174,17 @@ static PyTypeObject mmseg_DictionaryType = {
 typedef struct {
 	PyObject_HEAD
 	PyObject *text;
+	PyObject *pos;
 	int start;
 	int end;
 	int length;
 } mmseg_Token;
 
-static PyObject *
+static mmseg_Token *
 mmseg_Token_str(mmseg_Token* self)
 {
-	Py_INCREF(self->text);
-	return self->text;
+	Py_INCREF(self);
+	return self;
 }
 
 static PyObject *
@@ -217,6 +218,11 @@ mmseg_Token_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	if (self != NULL) {
 		self->text = PyString_FromString("");
 		if (self->text == NULL) {
+			Py_DECREF(self);
+			return NULL;
+		}
+		self->pos = PyString_FromString("");
+		if (self->pos == NULL) {
 			Py_DECREF(self);
 			return NULL;
 		}
@@ -269,6 +275,7 @@ mmseg_Token_init(mmseg_Token *self, PyObject *args, PyObject *kwds)
 
 static PyMemberDef mmseg_Token_members[] = {
 	{(char *)"text", T_OBJECT_EX, offsetof(mmseg_Token, text), READONLY},
+	{(char *)"pos", T_OBJECT_EX, offsetof(mmseg_Token, pos), READONLY},
 	{(char *)"start", T_INT, offsetof(mmseg_Token, start), READONLY},
 	{(char *)"end", T_INT, offsetof(mmseg_Token, end), READONLY},
 	{(char *)"length", T_INT, offsetof(mmseg_Token, length), READONLY},
@@ -406,12 +413,20 @@ mmseg_Algorithm_iternext(mmseg_Algorithm *self)
 					Py_DECREF(result);
 					return NULL;
 				}
+				if (!(result->pos = PyString_FromStringAndSize(rtk.pos, 4))) {
+					Py_DECREF(result);
+					return NULL;
+				}
 				result->start = static_cast<int>(rtk.text - self->algorithm->get_text());
 				result->length = rtk.length;
 				result->end = result->start + result->length;
 				return result;
 			} else {
 				if (!(result->text = PyUnicode_DecodeUTF8(rtk.text, rtk.length, "strict"))) {
+					Py_DECREF(result);
+					return NULL;
+				}
+				if (!(result->pos = PyUnicode_DecodeUTF8(rtk.pos,4, "strict"))) {
 					Py_DECREF(result);
 					return NULL;
 				}

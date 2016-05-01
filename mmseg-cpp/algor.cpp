@@ -13,9 +13,9 @@ namespace rmmseg
         do
         {
             if (m_pos >= m_text_length)
-                return Token(NULL, 0);
+                return Token(NULL, 0,NULL);
      
-            Token tk(NULL, 0);
+            Token tk(NULL, 0,NULL);
             int len = next_char();
             if (len == 1)
                 tk = get_basic_latin_word();
@@ -66,7 +66,7 @@ namespace rmmseg
             len = next_char();
         }
 
-        return Token(m_text+start, end-start);
+        return Token(m_text+start, end-start,"lat");
     }
 
     Token Algorithm::get_cjk_word(int len)
@@ -83,9 +83,9 @@ namespace rmmseg
             lsdmfocw_filter(chunks);
 
         if (chunks.size() < 1)
-            return Token(NULL, 0);
+            return Token(NULL, 0,NULL);
 
-        Token token(m_text+m_pos, chunks[0].words[0]->nbytes);
+        Token token(m_text+m_pos, chunks[0].words[0]->nbytes,chunks[0].words[0]->pos);
         m_pos += chunks[0].words[0]->nbytes;
         return token;
     }
