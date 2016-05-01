@@ -49,8 +49,15 @@ namespace rmmseg
                 sum += words[i]->freq;
             return sum;
         }
-
-        
+		int get_next_freq(int next,int length) const
+		{
+			for (int i = 0; i < n; ++i)
+				if (words[i]->length > length)
+					if (next == 0)
+						return words[i]->freq;
+					next = next - 1;
+			return -1;
+		}
         int n;
         Word *words[3];
     };

@@ -77,6 +77,10 @@ namespace rmmseg
             mm_filter(chunks);
         if (chunks.size() > 1)
             lawl_filter(chunks);
+
+		if (chunks.size() > 1)
+			lager_first_frep_filter(chunks);
+
         if (chunks.size() > 1)
             svwl_filter(chunks);
         if (chunks.size() > 1)

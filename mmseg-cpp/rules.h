@@ -81,6 +81,27 @@ namespace rmmseg
     {
         take_highest(chunks, LSDMFOCWCmp);
     }
+	struct FREPCmp_t
+	{
+		int operator()(const Chunk &a, const Chunk& b) const
+		{
+			int i = 0;
+			while(true){
+				int afreq = a.get_next_freq(i,1);
+				int bfreq = b.get_next_freq(i,1);
+				if (afreq > bfreq) return 1;
+				if (afreq < bfreq) return -1;
+				if (afreq == bfreq && afreq != -1)
+					i++;
+				if (afreq == -1 && bfreq == -1)
+					return 0;
+			}
+		}
+	} FREPCmp;
+	void lager_first_frep_filter(std::vector<Chunk> &chunks)
+	{
+		take_highest(chunks,FREPCmp);
+	}
 }
 
 #endif /* _RULES_H_ */

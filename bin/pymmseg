@@ -73,12 +73,6 @@ def process_tokens(stdin, separator):
     first = True
     algor = mmseg.Algorithm(stdin)
     for tk in algor:
-        if not first:
-            ret += separator
         print tk.text,tk.pos,tk.start,tk.end
-        ret += tk.text
-        first = False
-    return ret
 
-sys.stdout.write(process_tokens(sys.stdin.read(), separator))
-sys.stdout.write('\n')
+process_tokens(sys.stdin.read(), separator)
