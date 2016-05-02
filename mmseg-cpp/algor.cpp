@@ -211,6 +211,7 @@ namespace rmmseg
             word = get_tmp_word();
             word->nbytes = next_char();
             word->length = -1;
+            strncpy(word->pos, "unk\0", 4);
             strncpy(word->text, m_text+m_pos, word->nbytes);
             word->text[word->nbytes] = '\0';
             words.push_back(word);
